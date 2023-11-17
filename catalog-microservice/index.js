@@ -42,6 +42,20 @@ app.get("/info/:id", async (req, res) => {
   });
 });
 
+// Define a route to update the quantity of a book
+app.put("/update-quantity/:id/:quantity", async (req, res) => {
+  const id = req.params.id;
+  const quantity = req.params.quantity;
+  console.log(quantity);
+
+  await db.run("UPDATE books SET quantity = ? WHERE itemNumber = ?", [
+    quantity,
+    id,
+  ]);
+
+  res.sendStatus(200);
+});
+
 // Start the server
 app.listen(3001, () => {
   console.log("Server is listening on port 3001");
