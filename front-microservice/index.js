@@ -1,24 +1,43 @@
 const express = require("express");
-const request = require("request");
+const axios = require("axios");
 
 const app = express();
 
 // Define a route to forward all requests to the catalog or order server
 app.all("*", async (req, res) => {
-  const serverUrl =
-    req.originalUrl.startsWith("/search") || req.originalUrl.startsWith("/info")
-      ? "http://CATALOG_WEBSERVICE_IP"
-      : "http://ORDER_WEBSERVICE_IP";
+  const startOfUrl = req.originalUrl;
 
   // Forward the request to the appropriate server
-  const response = await request({
-    method: req.method,
-    url: serverUrl + req.originalUrl,
-    body: req.body,
-  });
+  if (startOfUrl.startsWith("/search") || startOfUrl.startsWith("/info")) {
+    // Send the response from the server back to the client
+    const serverUrl = "http://localhost:3001";
+    console.log(serverUrl);
+    console.log(req.originalUrl);
 
-  // Send the response from the server back to the client
-  res.send(response.body);
+    axios
+      .get(serverUrl + req.originalUrl)
+      .then((response) => {
+        console.log(response.data.price);
+        res.json(response.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  } else {
+    // Forward request to Order Server & get the response
+    const serverUrl = "http://localhost:3002";
+    console.log(serverUrl);
+    console.log(req.originalUrl);
+
+    axios
+      .post(serverUrl + req.originalUrl)
+      .then(async (response) => {
+        res.json(response.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
 });
 
 // Start the server
