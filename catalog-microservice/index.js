@@ -9,13 +9,35 @@ const db = new sqlite3.Database("bookstore.db");
 // Define a route to search for books on a given topic
 app.get("/search/:topic", async (req, res) => {
   const topic = req.params.topic;
-  const statement = "SELECT * FROM books WHERE topic = ?";
+  const statement = "SELECT itemNumber, title FROM books WHERE topic = ?";
 
   const books = await db.all(statement, topic, (err, rows) => {
     if (err) {
       console.error(err);
       return;
     }
+    res.json(rows);
+  });
+});
+
+// Define a route to get information about a specific book
+app.get("/info/:id", async (req, res) => {
+  const subject = req.params.subject;
+  const statement =
+    "SELECT title, quantity, price FROM books WHERE itemNumber = ?";
+  const id = req.params.id;
+
+  const books = await db.all(statement, id, (err, rows) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    if (!rows.length) {
+      console.log("This Item number doesn't exisit in the stock !");
+      res.status(400).send("This Item number doesn't exisit in the stock !");
+      return;
+    }
+    console.log(rows);
     res.json(rows);
   });
 });
