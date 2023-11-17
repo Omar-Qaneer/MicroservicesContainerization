@@ -21,6 +21,15 @@ app.post("/purchase/:itemNumber", async (req, res) => {
         res.status(400).send("Book out of stock.");
         return;
       }
+      // Decrement the book's quantity
+      return axios.put(
+        `http://localhost:3001/update-quantity/${itemNumber}/${
+          bookInfo[0].quantity - 1
+        }`
+      );
+    })
+    .then((response2) => {
+      console.log(response2.status);
     })
     .catch((err) => {
       console.error(err);
