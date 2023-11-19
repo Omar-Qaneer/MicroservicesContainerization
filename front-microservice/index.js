@@ -17,7 +17,6 @@ app.all("*", async (req, res) => {
     axios
       .get(serverUrl + req.originalUrl)
       .then((response) => {
-        console.log(response.data.price);
         res.json(response.data);
       })
       .catch((err) => {
