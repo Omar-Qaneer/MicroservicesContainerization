@@ -6,6 +6,9 @@ const app = express();
 const NodeCache = require("node-cache");
 const myCache = new NodeCache();
 
+var lastCatalogServerUsed = 1;
+var lastOrderServerUsed = 1;
+
 // Define a route to forward all requests to the catalog or order server
 app.all("*", async (req, res) => {
   const startOfUrl = req.originalUrl;
@@ -13,7 +16,14 @@ app.all("*", async (req, res) => {
   // Forward the request to the appropriate server
   if (startOfUrl.startsWith("/search") || startOfUrl.startsWith("/info")) {
     // Send the response from the server back to the client
-    const serverUrl = "http://localhost:3001";
+    var serverUrl = "";
+    if (lastCatalogServerUsed === 1) {
+      serverUrl = "http://localhost:3004";
+      lastCatalogServerUsed = 2;
+    } else {
+      serverUrl = "http://localhost:3001";
+      lastCatalogServerUsed = 1;
+    }
     console.log(serverUrl);
     console.log(req.originalUrl);
 
@@ -72,7 +82,14 @@ app.all("*", async (req, res) => {
     }
   } else {
     // Forward request to Order Server & get the response
-    const serverUrl = "http://localhost:3002";
+    var serverUrl = "";
+    if (lastOrderServerUsed === 1) {
+      serverUrl = "http://localhost:3003";
+      lastOrderServerUsed = 2;
+    } else {
+      serverUrl = "http://localhost:3002";
+      lastOrderServerUsed = 1;
+    }
     console.log(serverUrl);
     console.log(req.originalUrl);
 
