@@ -7,11 +7,22 @@ services:
       - "3000:3000"
     depends_on:
       - catalog
+    volumes:
+      - ./front-microservice:/app
 
   catalog:
     build: ./catalog-microservice
     ports:
       - "3001:3001"
+    volumes:
+      - ./catalog-microservice:/app
+
+  catalog2:
+    build: ./catalog-2-microservice
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./catalog-2-microservice:/app
 
   order:
     build: ./order-microservice
@@ -19,6 +30,19 @@ services:
       - "3002:3002"
     depends_on:
       - catalog
+      - catalog2
+    volumes:
+      - ./order-microservice:/app
+
+  order2:
+    build: ./order-2-microservice
+    ports:
+      - "3003:3003"
+    depends_on:
+      - catalog
+      - catalog2
+    volumes:
+      - ./order-2-microservice:/app
 
 networks:
   my-network:
