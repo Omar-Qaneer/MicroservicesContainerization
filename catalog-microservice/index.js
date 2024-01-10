@@ -58,5 +58,5 @@ app.put("/update-quantity/:id/:quantity", async (req, res) => {
 
 // Start the server
 app.listen(3001, () => {
-  console.log("Server is listening on port 3001");
+  console.log("Server is listening on port 3001 - catalog 1 server");
 });

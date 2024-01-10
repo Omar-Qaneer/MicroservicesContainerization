@@ -40,5 +40,5 @@ app.post("/purchase/:itemNumber", async (req, res) => {
 
 // Start the server
 app.listen(3002, () => {
-  console.log("Server is listening on port 3002");
+  console.log("Server is listening on port 3002 - order 1 server");
 });
