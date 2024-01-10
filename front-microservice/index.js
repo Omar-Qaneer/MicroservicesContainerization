@@ -41,6 +41,35 @@ app.all("*", async (req, res) => {
           });
       }
     }
+
+    if (startOfUrl.startsWith("/search")) {
+      // Split the string based on "/"
+      const parts = req.originalUrl.split("/");
+
+      // The last part should contain the title of the book
+      const title = parts[parts.length - 1];
+
+      console.log(title);
+
+      const cachedBook = myCache.get(`book:${title}`);
+
+      if (cachedBook) {
+        res.json(cachedBook);
+        console.log("Inside Cache");
+      } else {
+        // Fetch book data from backend
+        axios
+          .get(serverUrl + req.originalUrl)
+          .then((response) => {
+            res.json(response.data);
+            var book = response.data;
+            myCache.set(`book:${title}`, book, 300); // Cache for 5 minutes
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+    }
   } else {
     // Forward request to Order Server & get the response
     const serverUrl = "http://localhost:3002";
