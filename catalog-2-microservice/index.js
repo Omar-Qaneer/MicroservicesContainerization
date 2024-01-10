@@ -5,6 +5,7 @@ const app = express();
 
 // Connect to the SQLite database
 const db = new sqlite3.Database("bookstore.db");
+const db1 = new sqlite3.Database("../catalog-microservice/bookstore.db");
 
 // Define a route to search for books on a given topic
 app.get("/search/:topic", async (req, res) => {
@@ -49,6 +50,11 @@ app.put("/update-quantity/:id/:quantity", async (req, res) => {
   console.log(quantity);
 
   await db.run("UPDATE books SET quantity = ? WHERE itemNumber = ?", [
+    quantity,
+    id,
+  ]);
+
+  await db1.run("UPDATE books SET quantity = ? WHERE itemNumber = ?", [
     quantity,
     id,
   ]);
